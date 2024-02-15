@@ -133,7 +133,7 @@ def dijkstra_heap(graph, start):
     heap.build_min_heap()
 
     while heap.size_ != 0:
-        u = heap.critical()
+        u = heap.critical().key
         visited[u] = True
 
         for v in range(n):
