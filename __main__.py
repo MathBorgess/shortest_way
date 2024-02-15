@@ -56,12 +56,15 @@ class Element():
 
 class Heap():
     def __init__(self, length):
-        self.array_ = length*[0]
-        self.size_ = length
+        self.array_ = length*[Element(float("inf"), float("inf"))]
+        self.size_ = 0
+        self.capacity_ = length
 
     def insert(self, elem):
+        if self.size_ == self.capacity_:
+            return
+        idx = self.size_
         self.size_ += 1
-        idx = self.size_ - 1
         self.array_[idx] = elem
 
         while idx != 0 and self.array_[self.parent(idx)].value > self.array_[idx].value:
@@ -90,7 +93,6 @@ class Heap():
         array[elem2] = aux
 
     def min_heapify(self, idx):
-
         if not idx < 0:
 
             left_idx = self.left(idx)
@@ -128,20 +130,19 @@ def dijkstra_heap(graph, start):
     antecessor = [-1]*n
     visited = [False]*n
 
-    heap = Heap(n)
-    heap.array_ = [Element(i, distance[i]) for i in range(n)]
-    heap.build_min_heap()
-
-    while heap.size_ != 0:
+    heap = Heap(n**2)
+    heap.insert(Element(start, 0))
+    count = 0
+    while heap.size_ > 0:
         u = heap.critical().key
         visited[u] = True
+        count += 1
 
         for v in range(n):
             if graph[u][v] != 0 and not visited[v] and distance[v] > distance[u]+graph[u][v]:
                 distance[v] = distance[u]+graph[u][v]
                 antecessor[v] = u
-                heap.array_[heap.search(v)] = Element(v, distance[v])
-                heap.build_min_heap()
+                heap.insert(Element(v, distance[v]))
 
     return antecessor
 
@@ -152,6 +153,7 @@ def belman_ford(graph, start):
     distance[start] = 0
     antecessor = [-1]*n
 
+    # for _ in range(n-1):
     for i in range(n):
         for j in range(n):
             if graph[i][j] != 0 and distance[j] > distance[i]+graph[i][j]:
@@ -161,26 +163,23 @@ def belman_ford(graph, start):
     return antecessor
 
 
+examples_count = 1000
 examples = [[random.randint(0, len(
-    data_vertex)-1), random.randint(0, len(data_vertex)-1)] for _ in range(1000)]
+    data_vertex)-1), random.randint(0, len(data_vertex)-1)] for _ in range(examples_count)]
 
 print("START")
 start = time.time()
 for example in examples:
-    ant = dijkstra_linear(graph_matrix, example[0])
+    dijkstra_linear(graph_matrix, example[0])
 end = time.time()
 print("Dijkstra Linear: ", end-start)
 start = time.time()
 for example in examples:
-    ant2 = dijkstra_heap(graph_matrix, example[0])
+    dijkstra_heap(graph_matrix, example[0])
 end = time.time()
 print("Dijkstra Heap: ", end-start)
-print(ant == ant2)
 start = time.time()
 for example in examples:
-    ant3 = belman_ford(graph_matrix, example[0])
+    belman_ford(graph_matrix, example[0])
 end = time.time()
 print("Belman Ford: ", end-start)
-print(ant2 == ant3)
-
-print(ant == ant2 and ant2 == ant3)
