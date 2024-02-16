@@ -153,7 +153,6 @@ def belman_ford(graph, start):
     distance[start] = 0
     antecessor = [-1]*n
 
-    # for _ in range(n-1):
     for i in range(n):
         for j in range(n):
             if graph[i][j] != 0 and distance[j] > distance[i]+graph[i][j]:
@@ -163,23 +162,53 @@ def belman_ford(graph, start):
     return antecessor
 
 
+def mean(array):
+    return sum(array)/len(array)
+
+
+def std(array):
+    m = mean(array)
+    return (sum([(x-m)**2 for x in array])/len(array))**0.5
+
+
 examples_count = 1000
 examples = [[random.randint(0, len(
     data_vertex)-1), random.randint(0, len(data_vertex)-1)] for _ in range(examples_count)]
 
+
 print("START")
+times = []
 start = time.time()
 for example in examples:
+    start_ = time.time()
     dijkstra_linear(graph_matrix, example[0])
+    end_ = time.time()
+    times.append(end_-start_)
 end = time.time()
 print("Dijkstra Linear: ", end-start)
+print("Dijkstra Linear - Média: ", mean(times))
+print("Dijkstra Linear - Desvio Padrão: ", std(times))
+
+times = []
 start = time.time()
 for example in examples:
+    start_ = time.time()
     dijkstra_heap(graph_matrix, example[0])
+    end_ = time.time()
+    times.append(end_-start_)
 end = time.time()
-print("Dijkstra Heap: ", end-start)
+print("\nDijkstra Heap: ", end-start)
+print("Dijkstra Heap - Média: ", mean(times))
+print("Dijkstra Heap - Desvio Padrão: ", std(times))
+
+times = []
 start = time.time()
 for example in examples:
+    start_ = time.time()
     belman_ford(graph_matrix, example[0])
+    end_ = time.time()
+    times.append(end_-start_)
 end = time.time()
-print("Belman Ford: ", end-start)
+print("\nBelman Ford: ", end-start)
+print("Belman Ford - Média: ", mean(times))
+print("Belman Ford - Desvio Padrão: ", std(times))
