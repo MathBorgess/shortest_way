@@ -23,7 +23,7 @@ for i in range(len(data)):
                  ][data["Destination_airport"][i]] = data["Distance"][i]
 
 
-def dijkstra_linear(graph, start):
+def dijkstra_linear(graph, start, end):
     n = len(graph)
     distance = [float('inf')]*n
     distance[start] = 0
@@ -32,6 +32,8 @@ def dijkstra_linear(graph, start):
 
     vertex = start
     for _ in range(n):
+        if vertex == end:
+            break
         visited[vertex] = True
 
         for j in range(n):
@@ -123,7 +125,7 @@ class Heap():
             self.min_heapify(idx - 1)
 
 
-def dijkstra_heap(graph, start):
+def dijkstra_heap(graph, start, end):
     n = len(graph)
     distance = [float('inf')]*n
     distance[start] = 0
@@ -135,6 +137,8 @@ def dijkstra_heap(graph, start):
     count = 0
     while heap.size_ > 0:
         u = heap.critical().key
+        if u == end:
+            break
         visited[u] = True
         count += 1
 
@@ -152,7 +156,6 @@ def belman_ford(graph, start):
     distance = [float('inf')]*n
     distance[start] = 0
     antecessor = [-1]*n
-
     for i in range(n):
         for j in range(n):
             if graph[i][j] != 0 and distance[j] > distance[i]+graph[i][j]:
@@ -181,7 +184,7 @@ times = []
 start = time.time()
 for example in examples:
     start_ = time.time()
-    dijkstra_linear(graph_matrix, example[0])
+    dijkstra_linear(graph_matrix, example[0], example[1])
     end_ = time.time()
     times.append(end_-start_)
 end = time.time()
@@ -193,7 +196,7 @@ times = []
 start = time.time()
 for example in examples:
     start_ = time.time()
-    dijkstra_heap(graph_matrix, example[0])
+    dijkstra_heap(graph_matrix, example[0], example[1])
     end_ = time.time()
     times.append(end_-start_)
 end = time.time()
